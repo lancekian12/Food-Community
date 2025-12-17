@@ -1,6 +1,6 @@
 import React from "react";
 
-const page = async ({ params }) => {
+const MealDetailPage = async ({ params }) => {
   const { slug } = await params;
   return (
     <div>
@@ -10,4 +10,4 @@ const page = async ({ params }) => {
   );
 };
 
-export default page;
+export default MealDetailPage;

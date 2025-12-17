@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-const meals = () => {
+const MealPage = () => {
   return (
     <div>
-      
+      <h1>Meals Page</h1>
     </div>
-  )
-}
+  );
+};
 
-export default meals
+export default MealPage;
