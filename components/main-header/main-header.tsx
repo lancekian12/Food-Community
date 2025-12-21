@@ -6,6 +6,7 @@ import classes from "./main-header.module.css";
 import MainHeaderBackground from "./main-header-background";
 
 const MainHeader = () => {
+  console.log("Executing")
   return (
     <>
       <MainHeaderBackground />
