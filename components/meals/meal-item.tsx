@@ -1,15 +1,21 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
-import classes from './meal-item.module.css';
+import classes from "./meal-item.module.css";
 
-export default function MealItem({ title, slug, image, summary, creator }) {
+// Import Meal type if you have it
+import type { Meal } from "@/lib/meal";
+
+type MealItemProps = Pick<Meal, "title" | "slug" | "image" | "summary" | "creator">;
+
+const MealItem: React.FC<MealItemProps> = ({ title, slug, image, summary, creator }) => {
   return (
     <article className={classes.meal}>
       <header>
-<div className={classes.image}>
-    <Image src={image} alt={title} fill />
-</div>
+        <div className={classes.image}>
+          <Image src={image} alt={title} fill />
+        </div>
         <div className={classes.headerText}>
           <h2>{title}</h2>
           <p>by {creator}</p>
@@ -23,4 +29,6 @@ export default function MealItem({ title, slug, image, summary, creator }) {
       </div>
     </article>
   );
-}
+};
+
+export default MealItem;

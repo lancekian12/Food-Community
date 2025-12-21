@@ -1,7 +1,14 @@
 import React from "react";
 
-const MealDetailPage = async ({ params }) => {
-  const { slug } = await params;
+type MealDetailPageProps = {
+  params: {
+    slug: string;
+  };
+};
+
+const MealDetailPage = async ({ params }: MealDetailPageProps) => {
+  const { slug } = params;
+
   return (
     <div>
       <h1>Meal Details</h1>
