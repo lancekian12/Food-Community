@@ -2,11 +2,12 @@ import Link from "next/link";
 import React from "react";
 import logoImg from "@/assets/logo.png";
 import Image from "next/image";
+import classes from './main-header.module.css'
 
 const MainHeader = () => {
   return (
-    <div>
-      <Link href="/" className="flex items-center gap-2">
+    <header className={classes.header}>
+      <Link className={classes.logo} href="/">
         <Image
           src={logoImg}
           alt="NextLevel Food Logo"
@@ -14,7 +15,7 @@ const MainHeader = () => {
         <span>NextLevel Food</span>
       </Link>
 
-      <nav>
+      <nav className={classes.nav}>
         <ul>
           <li>
             <Link href="/meals">Browse Meals</Link>
@@ -24,7 +25,7 @@ const MainHeader = () => {
           </li>
         </ul>
       </nav>
-    </div>
+    </header>
   );
 };
 
