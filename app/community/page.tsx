@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
-import mealIcon from '@/assets/icons/meal.png';
-import communityIcon from '@/assets/icons/community.png';
-import eventsIcon from '@/assets/icons/events.png';
+import mealIcon from '@/public/assets/icons/meal.png';
+import communityIcon from '@/public/assets/icons/community.png';
+import eventsIcon from '@/public/assets/icons/events.png';
 import classes from './page.module.css';
 
 const CommunityPage = () => {
