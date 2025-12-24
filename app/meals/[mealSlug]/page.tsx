@@ -1,20 +1,39 @@
-import React from "react";
+// app/meals/[mealSlug]/page.tsx
+import { getMeal, debugList } from "@/lib/meal";
+import classes from "./page.module.css";
+import { notFound } from "next/navigation";
 
-type MealDetailPageProps = {
-  params: {
-    slug: string;
-  };
-};
+// type Props = {
+//   params?: { mealSlug?: string };
+// };
 
-const MealDetailPage = async ({ params }: MealDetailPageProps) => {
-  const { slug } = params;
 
+export default function MealDetailPage({ params }) {
+  const meal = getMeal(params.mealSlug);
+  meal.instructions = meal.instructions.replace(/\n/g, '<br />');
+  if (!meal) {
+    notFound();
+  }
   return (
-    <div>
-      <h1>Meal Details</h1>
-      <p>{slug}</p>
-    </div>
+    <>
+      <header className={classes.header}>
+        <div className={classes.image}>
+          <Image src={meal.image} alt={meal.title} fill />
+        </div>
+        <div className={classes.headerText}>
+          <h1>{meal.title}</h1>
+          <p className={classes.creator}>
+            by <a href={`mailto:${meal.creator_email}`}>NAME</a>
+          </p>
+          <p className={classes.summary}>{meal.summary}</p>
+        </div>
+      </header>
+      <main>
+        <p
+          className={classes.instructions}
+          dangerouslySetInnerHTML={{ __html: meal?.instructions }}
+        />
+      </main>
+    </>
   );
-};
-
-export default MealDetailPage;
+}
