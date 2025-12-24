@@ -32,17 +32,7 @@ export async function getMeal(slug?: unknown): Promise<Meal | undefined> {
   return row;
 }
 
-// export const getMeal = cache(
-//   async (slug?: string): Promise<Meal | undefined> => {
-//     if (!slug || typeof slug !== "string") return undefined;
 
-//     const cleaned = slug.trim().toLowerCase();
-
-//     return db
-//       .prepare("SELECT * FROM meals WHERE LOWER(slug) = ?")
-//       .get(cleaned) as Meal | undefined;
-//   }
-// );
 
 export const debugList = cache(async () => {
   const rows = db

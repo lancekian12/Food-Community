@@ -12,21 +12,18 @@ type Props = {
 };
 
 export default async function MealDetailPage({ params }: Props) {
-  // keep your await(params) as requested
   const { mealSlug } = (await params) as ParamsShape;
 
   if (!mealSlug) {
     notFound();
   }
 
-  // fetch the meal object using the slug
   const meal: Meal | undefined = await getMeal(mealSlug);
 
   if (!meal) {
     notFound();
   }
 
-  // safe guard: only call replace when instructions is present
   const instructionsHtml = meal.instructions
     ? meal.instructions.replace(/\n/g, "<br />")
     : "";
@@ -35,7 +32,7 @@ export default async function MealDetailPage({ params }: Props) {
     <>
       <header className={classes.header}>
         <div className={classes.image}>
-          <Image src={meal.image} alt={meal.title} fill />
+          <Image src={meal.image} alt={meal.title} fill/>
         </div>
 
         <div className={classes.headerText}>
