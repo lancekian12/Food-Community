@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/meals/[mealSlug]/page.tsx", "lib/meal.ts"  ],
   "exclude": ["node_modules"]
 }

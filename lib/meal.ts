@@ -17,26 +17,40 @@ export type Meal = {
   creator_email: string;
 };
 
-// synchronous cached versions (better-sqlite3 is sync)
-export const getMeals = cache((): Meal[] => {
+export const getMeals = cache(async (): Promise<Meal[]> => {
   return db.prepare("SELECT * FROM meals").all() as Meal[];
 });
 
-export function getMeal(slug) {
-  return db.prepare('SELECT * FROM meals WHERE slug =?').get(slug);
+export async function getMeal(slug?: unknown): Promise<Meal | undefined> {
+  if (!slug || typeof slug !== "string") return undefined;
+
+  // keep your original query — no changes to logic
+  const row = db
+    .prepare("SELECT * FROM meals WHERE slug = ?")
+    .get(slug) as Meal | undefined;
+
+  return row;
 }
-// Accept undefined and return undefined early — avoid runtime exception
-// export const getMeal = cache((slug?: string): Meal | undefined => {
-//   if (!slug || typeof slug !== "string") return undefined;
 
-//   const cleanedSlug = slug.trim().toLowerCase();
-//   return db
-//     .prepare("SELECT * FROM meals WHERE LOWER(slug) = ?")
-//     .get(cleanedSlug) as Meal | undefined;
-// });
+// export const getMeal = cache(
+//   async (slug?: string): Promise<Meal | undefined> => {
+//     if (!slug || typeof slug !== "string") return undefined;
 
-// debug helper (temporary)
-export const debugList = (): { dbPath: string; rows: { slug: string; title: string }[] } => {
-  const rows = db.prepare("SELECT slug, title FROM meals").all() as { slug: string; title: string }[];
-  return { dbPath, rows };
-};
+//     const cleaned = slug.trim().toLowerCase();
+
+//     return db
+//       .prepare("SELECT * FROM meals WHERE LOWER(slug) = ?")
+//       .get(cleaned) as Meal | undefined;
+//   }
+// );
+
+export const debugList = cache(async () => {
+  const rows = db
+    .prepare("SELECT slug, title FROM meals")
+    .all() as { slug: string; title: string }[];
+
+  return {
+    dbPath,
+    rows,
+  };
+});

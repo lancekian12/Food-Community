@@ -1,37 +1,56 @@
-// app/meals/[mealSlug]/page.tsx
-import { getMeal, debugList } from "@/lib/meal";
+import Image from "next/image";
+import { getMeal } from "@/lib/meal";
 import classes from "./page.module.css";
 import { notFound } from "next/navigation";
+import type { Meal } from "@/lib/meal";
 
-// type Props = {
-//   params?: { mealSlug?: string };
-// };
+type ParamsShape = { mealSlug: string };
 
+// allow params to be either the object or a promise (so `await params` works)
+type Props = {
+  params: ParamsShape | Promise<ParamsShape>;
+};
 
-export default function MealDetailPage({ params }) {
-  const meal = getMeal(params.mealSlug);
-  meal.instructions = meal.instructions.replace(/\n/g, '<br />');
+export default async function MealDetailPage({ params }: Props) {
+  // keep your await(params) as requested
+  const { mealSlug } = (await params) as ParamsShape;
+
+  if (!mealSlug) {
+    notFound();
+  }
+
+  // fetch the meal object using the slug
+  const meal: Meal | undefined = await getMeal(mealSlug);
+
   if (!meal) {
     notFound();
   }
+
+  // safe guard: only call replace when instructions is present
+  const instructionsHtml = meal.instructions
+    ? meal.instructions.replace(/\n/g, "<br />")
+    : "";
+
   return (
     <>
       <header className={classes.header}>
         <div className={classes.image}>
           <Image src={meal.image} alt={meal.title} fill />
         </div>
+
         <div className={classes.headerText}>
           <h1>{meal.title}</h1>
           <p className={classes.creator}>
-            by <a href={`mailto:${meal.creator_email}`}>NAME</a>
+            by <a href={`mailto:${meal.creator_email}`}>{meal.creator}</a>
           </p>
           <p className={classes.summary}>{meal.summary}</p>
         </div>
       </header>
+
       <main>
         <p
           className={classes.instructions}
-          dangerouslySetInnerHTML={{ __html: meal?.instructions }}
+          dangerouslySetInnerHTML={{ __html: instructionsHtml }}
         />
       </main>
     </>
