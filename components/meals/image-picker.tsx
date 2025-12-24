@@ -3,14 +3,14 @@ import { useRef, useState } from "react";
 import classes from "./image-picker.module.css";
 import Image from "next/image";
 
-const ImagePicker = ({ label, name }) => {
+const ImagePicker = ({ label, name } : string) => {
   const [pickedImage, setPickImage] = useState();
   const imageInput = useRef();
   function handlePickClick() {
     imageInput.current.click();
   }
   function handleImageChange(event) {
-const file = event.target.files[0];
+    const file = event.target.files[0];
 
     if (!file) {
       setPickedImage(null);
