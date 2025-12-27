@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { saveMeal } from "./meal";
+import { revalidatePath } from "next/cache";
 
 type ShareMealState = {
   message?: string;
@@ -52,6 +53,7 @@ export async function shareMeal(
 
   // ✅ Return state FIRST (type-safe)
   const result: ShareMealState = {};
-  redirect("/meals");
+  revalidatePath('/meals')
+  redirect("/meals"); 
   return result;
 }
