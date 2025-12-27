@@ -11,12 +11,21 @@ type Props = {
   params: ParamsShape | Promise<ParamsShape>;
 };
 
-export default async function MealDetailPage({ params }: Props) {
+export async function generateMetadata({ params }: Props) {
   const { mealSlug } = (await params) as ParamsShape;
+  const meal: Meal | undefined = await getMeal(mealSlug);
 
   if (!mealSlug) {
     notFound();
   }
+  return {
+    title: meal.title,
+    description: meal.summary,
+  };
+}
+
+export default async function MealDetailPage({ params }: Props) {
+  const { mealSlug } = (await params) as ParamsShape;
 
   const meal: Meal | undefined = await getMeal(mealSlug);
 
@@ -32,7 +41,7 @@ export default async function MealDetailPage({ params }: Props) {
     <>
       <header className={classes.header}>
         <div className={classes.image}>
-          <Image src={meal.image} alt={meal.title} fill/>
+          <Image src={meal.image} alt={meal.title} fill />
         </div>
 
         <div className={classes.headerText}>
