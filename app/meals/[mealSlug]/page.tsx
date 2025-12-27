@@ -13,9 +13,13 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { mealSlug } = (await params) as ParamsShape;
-  const meal: Meal | undefined = await getMeal(mealSlug);
 
   if (!mealSlug) {
+    notFound();
+  }
+  const meal: Meal | undefined = await getMeal(mealSlug);
+
+  if (!meal) {
     notFound();
   }
   return {
@@ -26,6 +30,10 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function MealDetailPage({ params }: Props) {
   const { mealSlug } = (await params) as ParamsShape;
+
+  if (!mealSlug) {
+    notFound();
+  }
 
   const meal: Meal | undefined = await getMeal(mealSlug);
 
