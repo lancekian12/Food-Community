@@ -20,6 +20,16 @@ export type Meal = {
   creator_email: string;
 };
 
+export type NewMeal = {
+  title: string;
+  summary: string;
+  instructions: string;
+  image: File;
+  creator: string;
+  creator_email: string;
+  slug?: string;
+};
+
 export const getMeals = cache(async (): Promise<Meal[]> => {
   return db.prepare("SELECT * FROM meals").all() as Meal[];
 });
@@ -47,37 +57,44 @@ export const debugList = cache(async () => {
   };
 });
 
-export async function saveMeal(meal) {
-  meal.slug = slugify(meal.title, { lower: true });
-  meal.instructions = xss(meal.instructions);
+export async function saveMeal(meal: NewMeal): Promise<void> {
+  const slug = slugify(meal.title, { lower: true });
+  const sanitizedInstructions = xss(meal.instructions);
 
-  const extension = meal.image.name.split(" ").pop();
-  const fileName = `${meal.slug}.${extension}`;
+  const extension = meal.image.name.split(".").pop();
+  const fileName = `${slug}.${extension}`;
 
-  const stream = fs.createWriteStream(`public/images/${fileName}`);
+  const imagePath = `/images/${fileName}`;
+
   const bufferedImage = await meal.image.arrayBuffer();
+  await fs.promises.writeFile(
+    `public/images/${fileName}`,
+    Buffer.from(bufferedImage)
+  );
 
-  stream.write(Buffer.from(bufferedImage), (error) => {
-    if (error) {
-      throw new Error("Saving iamge failed");
-    }
-  });
-
-  meal.image = `/images/${fileName}`;
+  const dbMeal = {
+    title: meal.title,
+    summary: meal.summary,
+    instructions: sanitizedInstructions,
+    creator: meal.creator,
+    creator_email: meal.creator_email,
+    image: imagePath,
+    slug,
+  };
 
   db.prepare(
     `
     INSERT INTO meals
       (title, summary, instructions, creator, creator_email, image, slug)
     VALUES (
-      @title, 
-      @summary, 
-      @instructions, 
-      @creator, 
-      @creator_email, 
-      @image,   
+      @title,
+      @summary,
+      @instructions,
+      @creator,
+      @creator_email,
+      @image,
       @slug
-     )
+    )
     `
-  ).run(meal);
+  ).run(dbMeal);
 }

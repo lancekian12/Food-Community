@@ -1,16 +1,28 @@
 "use client";
-import { useRef, useState } from "react";
-import classes from "./image-picker.module.css";
-import Image from "next/image";
 
-const ImagePicker = ({ label, name } : string) => {
-  const [pickedImage, setPickImage] = useState();
-  const imageInput = useRef();
+import { useRef, useState, ChangeEvent } from "react";
+import Image from "next/image";
+import classes from "./image-picker.module.css";
+
+type ImagePickerProps = {
+  label: string;
+  name: string;
+};
+
+export default function ImagePicker({
+  label,
+  name,
+}: ImagePickerProps) {
+  const [pickedImage, setPickedImage] = useState<string | null>(null);
+
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
   function handlePickClick() {
-    imageInput.current.click();
+    imageInputRef.current?.click();
   }
-  function handleImageChange(event) {
-    const file = event.target.files[0];
+
+  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
 
     if (!file) {
       setPickedImage(null);
@@ -19,16 +31,20 @@ const ImagePicker = ({ label, name } : string) => {
 
     const fileReader = new FileReader();
     fileReader.onload = () => {
-      setPickImage(fileReader.result);
+      setPickedImage(fileReader.result as string);
     };
+
     fileReader.readAsDataURL(file);
   }
+
   return (
     <div className={classes.picker}>
       <label htmlFor={name}>{label}</label>
+
       <div className={classes.controls}>
         <div className={classes.preview}>
           {!pickedImage && <p>No image picked yet.</p>}
+
           {pickedImage && (
             <Image
               src={pickedImage}
@@ -37,16 +53,18 @@ const ImagePicker = ({ label, name } : string) => {
             />
           )}
         </div>
+
         <input
           className={classes.input}
           type="file"
           id={name}
-          accept="image/png, image/jpeg"
           name={name}
-          ref={imageInput}
+          accept="image/png, image/jpeg"
+          ref={imageInputRef}
           onChange={handleImageChange}
           required
         />
+
         <button
           className={classes.button}
           type="button"
@@ -57,6 +75,4 @@ const ImagePicker = ({ label, name } : string) => {
       </div>
     </div>
   );
-};
-
-export default ImagePicker;
+}
