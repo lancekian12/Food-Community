@@ -11,8 +11,8 @@ const MainHeader = () => {
       <MainHeaderBackground />
       <header className={classes.header}>
         <Link className={classes.logo} href="/">
-          <Image src={logoImg} alt="NextLevel Food Logo" priority />
-          NextLevel Food
+          <Image src={logoImg} alt="Snack Society Food Logo" priority />
+          Snack Society Food
         </Link>
 
         <nav className={classes.nav}>
